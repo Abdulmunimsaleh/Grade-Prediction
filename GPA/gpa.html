@@ -234,13 +234,53 @@
         nextSubjectPrediction();
 
         let grades = [];
+        let creditScore = 4;
 
         inputs.forEach( input => grades.push(input.value) );
+
+        console.log("grades: ", grades);
+
+        const totalCredits = grades.length * creditScore;
+
+        function getScoreFrom(grade){
+            switch(grade){
+              case "AA":
+                return 4
+              case "BA":
+                return 3.5
+              case "BB":
+                return 3
+              case "CB":
+                return 2.5
+              case "CC":
+                return 2
+              case "DC":
+                return 1.5
+              case "DD":
+                return 1
+              case "FD":
+                return 0.5
+              default:
+                return 0
+            }
+        }
+
+        let resultFromMap = grades.map( grade => getScoreFrom(grade) * creditScore)
+
+        console.log("resultFromMap: ", resultFromMap);
+
+        const reducedResult = resultFromMap.reduce( (a, b) => a + b);
+
+        console.log("reduced Result: ", reducedResult);
+
+        const gpa = reducedResult / totalCredits;
+
+        console.log("gpa : ", gpa);
 
         let choiceSelectElement = document.querySelector(".choice-select");
         choice = Number(choiceSelectElement.value);
 
-        await predictGPA(grades, choice);
+        await predictGPA(gpa, choice);
 
       }
 

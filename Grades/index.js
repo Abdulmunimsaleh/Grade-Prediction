@@ -1,7 +1,7 @@
 function getResultsForNextGrade(data) {
 
     return new Promise( async (resolve, reject) => {
-        let url = `http://127.0.0.1:5000/predict/?data=${data}`
+        let url = `http://127.0.0.1:5000/predictgrade/?data=${data}`
 
         let result = await fetch(url, { 
             method: 'GET'
