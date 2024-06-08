@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="custom-select.css" />
+    <script src="index.js"></script>
+    <script src="customSelect.js"></script>
+  </head>
+  <body>
+    <h1>WELCOME TO NEAR EAST UNIVERSITY CGPA PREDICTOR</h1>
+    <p>
+      THIS MODEL CAN PREDICT THE FINAL CGPA OF A STUDENT AT THE END OF FOURTH
+      YEAR GIVEN GPs OF THE COURSES OBTAINED IN FIRST THREE YEARS
+    </p>
+    <p>Please select your department:</p>
+
+    <div class="course">
+      <div class="unit">Department</div>
+      <div class="custom-select" data-custom="once" onclick="selectDepartment()">
+        <select class="department-select">
+          <option value="0">Select Your Department</option>
+          <option value="Computer Engineering">Computer Engineering</option>
+          <option value="Artificial Intelligence Engineering">Artificial Intelligence Engineering</option>
+        </select>
+      </div>
+    </div>
+
+    <p>Please select one of the following options:</p>
+    <ul>
+      1. Predict CGPA based on GPs of First Year
+    </ul>
+    <ul>
+      2. Predict CGPA based on GPs of First Two Years
+    </ul>
+    <ul>
+      3. Predict CGPA based on GPs of First Three Years
+    </ul>
+
+    <h1>Choose the years you want to predict for</h1>
+
+    <div class="course">
+      <div class="unit">Years Selection</div>
+      <div class="custom-select" data-custom="once" onclick="startWithChosenLesson()">
+        <select class="subject choice-select">
+          <option value="1">Select Year</option>
+          <option value="1">First Year</option>
+          <option value="2">First and Second Year</option>
+          <option value="3">First, Second and Third Year</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="outer-container">
+
+    </div>
+
+    <div class="analysis-container">
+
+    </div>
+
+
+    <script>
+
+          runCustomSelect();
+
+          function reset(){
+            let analysisContainer  = document.querySelector(".analysis-container");
+            analysisContainer.innerHTML = "";
+          }
+
+          let firstYearSubjects
+          let secondYearSubjects
+          let thirdYearSubjects
+          let fourthYearSubjects
+
+          let selectedYearContainerClass
+          let selectedYear
+
+          const CEFirstYearSubjects = [
+            "PHY101", "MTH101", "CHM101", "ENG101", "ECC101", 
+            "COM100", "ECC102", "ECC104", "ENG102", "MTH102",
+            "PHY102", "MTH113"
+          ]
+
+          const CESecondYearSubjects = [
+            "MTH251", "MTH201", "ECC201", "ECC203", "ECC205", 
+            "ENG201", "ECC215", //"ECC002"
+          ]
+
+          const CEThirdYearSubjects = [
+            "ECC002", "COM339", "COM382", "ECC301", "ECC003", "ECC341", 
+            "MTH323", "ECC317", "COM333", "COM360", "COM344", "ECC302",
+            "ECC303", // "ECC002"
+          ]
+
+          const CEFourthYearSubjects = [
+            "COM490", "COM491", "ECC426", "ECC415",
+            "ECC417", "ECC405"
+          ]
+
+          const AIFirstYearSubjects = [ 
+            "CHM101", "ENG101", "MTH 101", "ECC102", "PHY101",
+            "MTH113", "YIT101", "ECC108", "ENG102", "MTH102",
+            "PHY102", "YIT102",
+          ]
+
+          const AISecondYearSubjects = [
+            "MTH201", "ECC201", "ECC001", "ECC007", "AIE201",
+            "AIE204", "ECC202"
+          ]
+
+          const AIThirdYearSubjects = [
+            "ECC302", "ECC301", "ENG201", "AIE303", "ECC439",
+            "AIE302", "ECC303", "AIE304", "AIE306", "ECC440",
+            "AIE204", "AIE206", "MTH251"
+          ]
+
+          const AIFourthYearSubjects = [
+            "AIE401", "AIE403", "AIE402", "AIE415",
+            "AIE413", "ECC419", "AIE420", "AIE417"
+          ]
+
+
+          function selectDepartment(){
+
+            let choiceSelectElement = document.querySelector(".department-select");
+            let lesson = choiceSelectElement.value;
+
+            reset();
+
+            switch(lesson){
+              case "Computer Engineering":
+                  firstYearSubjects = CEFirstYearSubjects
+                  secondYearSubjects = CESecondYearSubjects
+                  thirdYearSubjects = CEThirdYearSubjects 
+                break;
+                case "Artificial Intelligence Engineering":
+                  firstYearSubjects = AIFirstYearSubjects
+                  secondYearSubjects = AISecondYearSubjects
+                  thirdYearSubjects = AIThirdYearSubjects 
+                break;
+            }
+          }
+
+      function startWithChosenLesson(){
+
+          reset();
+
+          let choiceSelectElement = document.querySelector(".choice-select");
+          choice = Number(choiceSelectElement.value);
+          renderUI({ subjects : { firstYearSubjects, secondYearSubjects, thirdYearSubjects }, choice });
+          console.log(choice);
+
+      }
+
+      function renderUI({ subjects, choice }){
+
+        let { firstYearSubjects, secondYearSubjects, thirdYearSubjects } = subjects
+
+        switch(choice){
+          case 1: renderGradeOptionsFor(firstYearSubjects);
+            break; 
+          case 2: renderGradeOptionsFor(firstYearSubjects, secondYearSubjects);
+            break; 
+          case 3: renderGradeOptionsFor(firstYearSubjects, secondYearSubjects, thirdYearSubjects);
+            break; 
+          default:
+            throw new Error("Choice does not exist");
+              break;
+        }
+
+        function renderGradeOptionsFor(...yearList){
+
+          let containerParent = document.querySelector(".outer-container");
+          containerParent.innerHTML = "";
+
+          yearList.forEach( (yearGradeList,index) => {
+
+            let yearContainer = document.createElement("div");
+            yearContainer.className = `container year-${index+1}`;
+
+            selectedYearContainerClass = `year-${index+1}`;
+            selectedYear = index+1;
+            // make title here
+
+            yearGradeList.forEach( grade => {
+
+              const selectElement = 
+              `
+                <div class="course">
+                  <div class="unit">${grade}</div>
+                  <div class="custom-select">
+                    <select class="">
+                      <option value="0">Select Grade</option>
+                      <option value="AA">AA</option>
+                      <option value="BA">BA</option>
+                      <option value="BB">BB</option>
+                      <option value="CB">CB</option>
+                      <option value="CC">CC</option>
+                      <option value="DC">DC</option>
+                      <option value="DD">DD</option>
+                      <option value="FD">FD</option>
+                      <option value="FF">FF</option>
+                      <option value=0>I did not take this subject</option>
+                    </select>
+                  </div>
+                </div>
+
+              `;
+
+              yearContainer.innerHTML += selectElement;
+                        
+            });
+
+
+            containerParent.appendChild(yearContainer);
+
+          });
+
+          runCustomSelect();
+
+        }
+
+      }
+
+      async function handlePrediction(){
+
+        let GPAInputContainer = document.querySelector(`.outer-container`);
+        let inputs = GPAInputContainer.querySelectorAll("select");
+
+        nextSubjectPrediction();
+
+        let grades = [];
+
+        inputs.forEach( input => grades.push(input.value) );
+
+        let choiceSelectElement = document.querySelector(".choice-select");
+        choice = Number(choiceSelectElement.value);
+
+        await predictGPA(grades, choice);
+
+      }
+
+      function nextSubjectPrediction(){
+
+        const courseDropdowns = document.querySelectorAll(`.${selectedYearContainerClass} .course`);
+        
+        const passedCourseMap = {}
+        const failedCourseMap = {}
+
+        courseDropdowns.forEach( course => {
+
+          let unit = course.querySelector(".unit").textContent
+          let grade = course.querySelector(".select-selected").textContent;
+
+          if(hasPassed(grade)) passedCourseMap[unit] = {
+              code: unit,
+              grade
+          }  
+          
+          if(!hasPassed(grade)) failedCourseMap[unit] = {
+              code: unit,
+              grade
+          }
+
+        })
+
+        function hasPassed(grade){
+          const passingGrades = [ "AA","BA","BB","CB","CC","DC","DD" ]
+          return passingGrades.includes(grade)
+        }
+
+        console.log("passed map: ", passedCourseMap);
+        console.log("failed map: ", failedCourseMap);
+
+        let nextYearSubjects = secondYearSubjects;
+
+        switch(selectedYear){
+              case 1: nextYearSubjects = secondYearSubjects 
+              break;
+              case 2: nextYearSubjects = thirdYearSubjects 
+              break;
+              case 3: nextYearSubjects = fourthYearSubjects 
+              break;
+          }
+
+        let subjectsToExcel = compareWithNextYear(passedCourseMap, nextYearSubjects);
+        let subjectsToRetake = extractKeys(failedCourseMap);
+        let remainingSubjects = removeKeysFrom(subjectsToExcel, nextYearSubjects);
+
+        console.log("subjectsToExcel: ", subjectsToExcel)
+        console.log("subjectsToRetake: ", subjectsToRetake)
+        console.log("remainingSubjects: ", remainingSubjects)
+
+
+        let analysisContainer  = document.querySelector(".analysis-container");
+        analysisContainer.innerHTML = "";
+        
+        let excelSubjectsContainer = document.createElement("div");
+        excelSubjectsContainer.className = "excel-subjects";
+
+        let retakeSubjectsContainer = document.createElement("div");
+        retakeSubjectsContainer.className = "retake-subjects";
+
+        let remainingSubjectsContainer = document.createElement("div");
+        remainingSubjectsContainer.className = "remaining-subjects";
+
+        let excelHeading = document.createElement("div");
+        excelHeading.className = "heading";
+        excelHeading.textContent = "Subject You'll Excell In";
+
+        let retakeHeading = document.createElement("div");
+        retakeHeading.className = "heading";
+        retakeHeading.textContent = "Subject You Have To Retake";
+
+        let remainingHeading = document.createElement("div");
+        remainingHeading.className = "heading";
+        remainingHeading.textContent = `Remaining Subject To Take For Year (${selectedYear + 1})`;
+
+        excelSubjectsContainer.append(excelHeading);
+        retakeSubjectsContainer.append(retakeHeading);
+        remainingSubjectsContainer.append(remainingHeading);
+
+        subjectsToExcel.forEach( item => {
+          const wrapper = document.createElement("div");
+          wrapper.textContent = item
+          excelSubjectsContainer.append(wrapper);
+        })
+
+        subjectsToRetake.forEach( item => {
+          const wrapper = document.createElement("div");
+          wrapper.textContent = item
+          retakeSubjectsContainer.append(wrapper);
+        })
+
+        remainingSubjects.forEach( item => {
+          const wrapper = document.createElement("div");
+          wrapper.textContent = item
+          remainingSubjectsContainer.append(wrapper);
+        })
+
+        analysisContainer.append(excelSubjectsContainer)
+        analysisContainer.append(retakeSubjectsContainer)
+        analysisContainer.append(remainingSubjectsContainer)
+
+
+
+      }
+
+      function removeKeysFrom(a, b){
+
+          let copyOfB = [...b];
+
+          a.forEach( item => {
+            const index = copyOfB.indexOf(item);
+            copyOfB.splice(index, 1)
+          })
+
+          return copyOfB;
+      }
+
+      function extractKeys(object){
+        let entries = Object.entries(object);
+        console.log("entries for extraction: ", entries);
+        return entries.map( entry => entry[0])
+      }
+
+      function compareWithNextYear(courseMap, nextYearSubjects){
+          let entries = Object.entries(courseMap);
+          let subjectToExcel = [];
+
+          entries.forEach( entry => {
+              const [ key, value ] = entry;
+              const [ code, number ] = key.match(/[a-zA-Z]+|[0-9]+/g)
+
+              nextYearSubjects.forEach( subject => {
+                if(subject.includes(code)) subjectToExcel.push(subject);
+              })
+
+          });
+
+          return subjectToExcel;
+      }
+
+
+    </script>
+
+    <div class="simple-grid">
+      <button onclick="handlePrediction()">Predict GPA</button>
+      
+      <div class="result">
+        ...
+      </div>
+    </div>
+
+    <style>
+
+      body{
+        padding: 40px;
+      }
+
+      .simple-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-gap: 20px;
+        align-items: center;
+        justify-items: start;
+
+      }
+
+      .result {
+        border: 2px solid var(--main-color);
+        border-radius: 10px;
+        padding: 10px 40px;
+        color: var(--main-color);
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+    </style>
+  </body>
+</html>

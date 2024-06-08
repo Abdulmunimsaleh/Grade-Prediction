@@ -32,7 +32,7 @@ def get_results():
     grade_result = class_prediction(df)
 
     results = {
-        "grade": grade_result,
+        "grade": abs(grade_result),
     }
 
     response = jsonify(results)

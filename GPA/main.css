@@ -1,0 +1,43 @@
+* {
+  box-sizing: 0 0;
+  margin: 0 0;
+  font-family: Avenir Next;
+}
+
+.container {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
+  /* height: 100vh; */
+  gap: 30px;
+  margin-top: 32px;
+  /* background: #6f2036; */
+  font-weight: 700;
+}
+
+.unit {
+  margin: 10px;
+}
+
+.subject {
+  margin: 10px;
+  font-size: 20px;
+  width: 100px;
+  border: 3px solid black;
+  border-radius: 10px;
+}
+
+button {
+  margin: 20px;
+  padding: 1em 2em;
+  border-radius: 10px;
+  border: 3px solid var(--main-color);
+  cursor: pointer;
+  display: inline-block;
+  background: var(--main-color);
+  color: white;
+}
+
+button:hover {
+  background-color: #271b1e;
+}
